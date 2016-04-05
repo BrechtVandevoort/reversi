@@ -1,0 +1,2 @@
+# reversi
+Implementation of Reversi.
