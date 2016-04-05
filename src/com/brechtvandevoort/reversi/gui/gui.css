@@ -1,0 +1,12 @@
+.field {
+    -fx-stroke: darkgreen;
+    -fx-fill: green;
+}
+
+.whiteCell {
+    -fx-fill: wheat;
+}
+
+.blackCell {
+    -fx-fill: #202020;
+}
