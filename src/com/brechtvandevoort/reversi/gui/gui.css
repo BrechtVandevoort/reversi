@@ -1,6 +1,10 @@
 .field {
-    -fx-stroke: darkgreen;
-    -fx-fill: green;
+    -fx-stroke: #006400;
+    -fx-fill: #008000;
+}
+
+.highlighted {
+    -fx-fill: #007000;
 }
 
 .whiteCell {
