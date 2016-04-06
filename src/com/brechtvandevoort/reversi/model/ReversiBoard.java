@@ -100,6 +100,10 @@ public class ReversiBoard {
         return positions;
     }
 
+    public boolean canPlace(Player player) {
+        return !getPossiblePositions(player).isEmpty();
+    }
+
     public ArrayList<Position> getAllPositions() {
         ArrayList<Position> positions = new ArrayList<>();
         for (int row = 0; row < BOARD_SIZE; row++) {
@@ -109,6 +113,17 @@ public class ReversiBoard {
         }
 
         return positions;
+    }
+
+    public int countStones(Player player) {
+        FieldState state = (player ==Player.BLACK)? FieldState.BLACK : FieldState.WHITE;
+        int count = 0;
+        for(Position pos : getAllPositions()) {
+            if(getFieldState(pos) == state)
+                count++;
+        }
+
+        return count;
     }
 
     private ArrayList<Position> processRotatingFieldsDirection(Position pos, FieldState ownField, FieldState opponentField, int rowDelta, int colDelta) {

@@ -2,7 +2,9 @@ package com.brechtvandevoort.reversi.gui;
 
 import com.brechtvandevoort.reversi.model.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -83,6 +85,22 @@ public class Main extends Application implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        updateFields();
+        Platform.runLater(() -> {
+            updateFields();
+            if(_game.isGameEnded()) {
+                Score score = _game.getScore();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Game ended!");
+                if (score.getNumBlack() > score.getNumWhite()) {
+                    alert.setHeaderText("Black won!");
+                } else if (score.getNumBlack() < score.getNumWhite()) {
+                    alert.setHeaderText("White won!");
+                } else {
+                    alert.setHeaderText("It's a draw!");
+                }
+                alert.setContentText("Black: " + score.getNumBlack() + "\nWhite: " + score.getNumWhite());
+                alert.showAndWait();
+            }
+        });
     }
 }
