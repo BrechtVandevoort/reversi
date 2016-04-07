@@ -1,10 +1,5 @@
 package com.brechtvandevoort.reversi.model;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-
-import javax.crypto.spec.PSource;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -49,11 +44,11 @@ public class ReversiBoard {
         _fields[row][col] = state;
     }
 
-    public boolean place(Position pos, Player player) {
+    public boolean place(Position pos, PlayerType player) {
         if(!getPossiblePositions(player).contains(pos))
             return false;
 
-        FieldState state = (player == Player.BLACK)? FieldState.BLACK : FieldState.WHITE;
+        FieldState state = (player == PlayerType.BLACK)? FieldState.BLACK : FieldState.WHITE;
         for(Position p : getRotatingFields(pos, player)) {
             setFieldState(state, p);
         }
@@ -62,7 +57,7 @@ public class ReversiBoard {
         return true;
     }
 
-    public ArrayList<Position> getPossiblePositions(Player player) {
+    public ArrayList<Position> getPossiblePositions(PlayerType player) {
         ArrayList<Position> possiblePositions = new ArrayList<>();
 
         for(Position pos : getAllPositions()) {
@@ -74,19 +69,19 @@ public class ReversiBoard {
         return possiblePositions;
     }
 
-    public boolean isPossiblePosition(Position pos, Player player) {
+    public boolean isPossiblePosition(Position pos, PlayerType player) {
         return getRotatingFields(pos, player).size() > 0;
     }
 
-    public ArrayList<Position> getRotatingFields(Position pos, Player player) {
+    public ArrayList<Position> getRotatingFields(Position pos, PlayerType player) {
         ArrayList<Position> positions = new ArrayList<>();
 
         if(getFieldState(pos) != FieldState.EMPTY) {
             return positions;
         }
 
-        FieldState ownField = (player == Player.BLACK)? FieldState.BLACK: FieldState.WHITE;
-        FieldState opponentField = (player == Player.BLACK)? FieldState.WHITE : FieldState.BLACK;
+        FieldState ownField = (player == PlayerType.BLACK)? FieldState.BLACK: FieldState.WHITE;
+        FieldState opponentField = (player == PlayerType.BLACK)? FieldState.WHITE : FieldState.BLACK;
 
         positions.addAll(processRotatingFieldsDirection(pos, ownField, opponentField, -1, 0));
         positions.addAll(processRotatingFieldsDirection(pos, ownField, opponentField, 1, 0));
@@ -100,7 +95,7 @@ public class ReversiBoard {
         return positions;
     }
 
-    public boolean canPlace(Player player) {
+    public boolean canPlace(PlayerType player) {
         return !getPossiblePositions(player).isEmpty();
     }
 
@@ -115,8 +110,8 @@ public class ReversiBoard {
         return positions;
     }
 
-    public int countStones(Player player) {
-        FieldState state = (player ==Player.BLACK)? FieldState.BLACK : FieldState.WHITE;
+    public int countStones(PlayerType player) {
+        FieldState state = (player == PlayerType.BLACK)? FieldState.BLACK : FieldState.WHITE;
         int count = 0;
         for(Position pos : getAllPositions()) {
             if(getFieldState(pos) == state)
@@ -124,6 +119,15 @@ public class ReversiBoard {
         }
 
         return count;
+    }
+
+    public Score getScore() {
+        return new Score(countStones(PlayerType.WHITE), countStones(PlayerType.BLACK), isGameEnded());
+    }
+
+    public boolean isGameEnded() {
+        return getPossiblePositions(PlayerType.BLACK).isEmpty() &&
+                getPossiblePositions(PlayerType.WHITE).isEmpty();
     }
 
     private ArrayList<Position> processRotatingFieldsDirection(Position pos, FieldState ownField, FieldState opponentField, int rowDelta, int colDelta) {

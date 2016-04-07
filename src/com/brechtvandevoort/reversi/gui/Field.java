@@ -26,7 +26,7 @@ public class Field extends StackPane {
         _pos = pos;
         update(FieldState.EMPTY, false);
         setOnMouseClicked(event -> {
-            _game.place(pos);
+            _game.getActivePlayer().proposeMove(pos);
         });
     }
 

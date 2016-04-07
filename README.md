@@ -1,2 +1,2 @@
 # Reversi
-Implementation of Reversi
+Implementation of Reversi.

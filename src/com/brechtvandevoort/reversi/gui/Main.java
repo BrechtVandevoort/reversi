@@ -24,6 +24,7 @@ public class Main extends Application implements Observer {
     public void start(Stage primaryStage) throws Exception{
         _game = new ReversiGame();
         _game.addObserver(this);
+        _game.init();
 
         initFields();
         initBoardGrid();
@@ -55,7 +56,7 @@ public class Main extends Application implements Observer {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 Position pos = new Position(i,j);
-                _fields[i][j].update(board.getFieldState(pos), board.getPossiblePositions(_game.getActivePlayer()).contains(pos));
+                _fields[i][j].update(board.getFieldState(pos), board.getPossiblePositions(_game.getActivePlayerType()).contains(pos));
             }
         }
     }
@@ -87,8 +88,8 @@ public class Main extends Application implements Observer {
     public void update(Observable o, Object arg) {
         Platform.runLater(() -> {
             updateFields();
-            if(_game.isGameEnded()) {
-                Score score = _game.getScore();
+            if(_game.getBoard().isGameEnded()) {
+                Score score = _game.getBoard().getScore();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game ended!");
                 if (score.getNumBlack() > score.getNumWhite()) {

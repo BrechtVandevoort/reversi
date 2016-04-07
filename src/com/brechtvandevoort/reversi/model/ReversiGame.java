@@ -1,62 +1,58 @@
 package com.brechtvandevoort.reversi.model;
 
-import sun.util.resources.ca.CalendarData_ca;
+import com.brechtvandevoort.reversi.model.playerimplementations.HumanPlayer;
+import com.brechtvandevoort.reversi.model.playerimplementations.RandomPlayer;
 
-import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Random;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by brecht on 05/04/2016.
  */
 public class ReversiGame extends Observable {
     private ReversiBoard _board;
-    private Player _activePlayer = Player.BLACK;
+    private PlayerType _activePlayerType;
+    private Player _playerBlack;
+    private Player _playerWhite;
 
     public ReversiGame() {
         _board = new ReversiBoard();
+        _activePlayerType = PlayerType.BLACK;
+        _playerBlack = new HumanPlayer();
+        _playerWhite = new RandomPlayer();
         _board.initBoard();
+    }
+
+    public void init() {
+        _playerBlack.init(PlayerType.BLACK, this);
+        _playerWhite.init(PlayerType.WHITE, this);
+        _board.initBoard();
+        _playerBlack.notifyForMove();
     }
 
     public ReversiBoard getBoard() {
         return _board;
     }
 
-    public Player getActivePlayer() {
-        return _activePlayer;
+    public PlayerType getActivePlayerType() {
+        return _activePlayerType;
     }
 
-    public boolean place(Position pos) {
-        if(_activePlayer != Player.BLACK) {
+    public Player getActivePlayer() {
+        if(_activePlayerType == PlayerType.BLACK)
+            return _playerBlack;
+        else
+            return _playerWhite;
+    }
+
+    public boolean place(Position pos, Player player) {
+        if(_activePlayerType != player.getPlayerType()) {
             return false;
         }
-        return doPlace(pos);
-    }
 
-    public boolean isGameEnded() {
-        return _board.getPossiblePositions(Player.BLACK).isEmpty() &&
-                _board.getPossiblePositions(Player.WHITE).isEmpty();
-    }
-
-    public Score getScore() {
-        return new Score(_board.countStones(Player.WHITE), _board.countStones(Player.BLACK), isGameEnded());
-    }
-
-    private void switchPlayer() {
-        Player otherPlayer = (_activePlayer == Player.BLACK)? Player.WHITE : Player.BLACK;
-        if (_board.canPlace(otherPlayer) || !_board.canPlace(_activePlayer))
-            _activePlayer = otherPlayer;
-    }
-
-    private boolean doPlace(Position pos) {
-        if(_board.place(pos, _activePlayer)) {
+        if(_board.place(pos, _activePlayerType)) {
             switchPlayer();
             setChanged();
             notifyObservers();
-            if(getActivePlayer() == Player.WHITE && !isGameEnded()) {
-                computerMove();
-            }
             return true;
         }
         else {
@@ -64,17 +60,12 @@ public class ReversiGame extends Observable {
         }
     }
 
-    private void computerMove() {
-        Thread t = new Thread(() -> {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            ArrayList<Position> positions = _board.getPossiblePositions(_activePlayer);
-            Random r = new Random();
-            doPlace(positions.get(r.nextInt(positions.size())));
-        });
-        t.start();
+    private void switchPlayer() {
+        PlayerType otherPlayer = (_activePlayerType == PlayerType.BLACK)? PlayerType.WHITE : PlayerType.BLACK;
+        if (_board.canPlace(otherPlayer) || !_board.canPlace(_activePlayerType)) {
+            _activePlayerType = otherPlayer;
+            if(!_board.isGameEnded())
+                getActivePlayer().notifyForMove();
+        }
     }
 }
