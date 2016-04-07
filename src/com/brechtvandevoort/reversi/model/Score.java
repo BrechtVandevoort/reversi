@@ -25,4 +25,11 @@ public class Score {
     public int getNumBlack() {
         return _numBlack;
     }
+
+    public int getNum(PlayerType type) {
+        if(type == PlayerType.BLACK)
+            return _numBlack;
+        else
+            return _numWhite;
+    }
 }

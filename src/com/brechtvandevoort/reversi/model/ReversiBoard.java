@@ -130,6 +130,18 @@ public class ReversiBoard {
                 getPossiblePositions(PlayerType.WHITE).isEmpty();
     }
 
+    public ReversiBoard copy() {
+        ReversiBoard board = new ReversiBoard();
+
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                board.setFieldState(getFieldState(row, col), row, col);
+            }
+        }
+
+        return board;
+    }
+
     private ArrayList<Position> processRotatingFieldsDirection(Position pos, FieldState ownField, FieldState opponentField, int rowDelta, int colDelta) {
         ArrayList<Position> rotating = new ArrayList<>();
 

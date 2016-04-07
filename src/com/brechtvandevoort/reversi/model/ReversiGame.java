@@ -2,6 +2,7 @@ package com.brechtvandevoort.reversi.model;
 
 import com.brechtvandevoort.reversi.model.playerimplementations.HumanPlayer;
 import com.brechtvandevoort.reversi.model.playerimplementations.RandomPlayer;
+import com.brechtvandevoort.reversi.model.playerimplementations.RandomWinChancePlayer;
 
 import java.util.Observable;
 
@@ -18,7 +19,7 @@ public class ReversiGame extends Observable {
         _board = new ReversiBoard();
         _activePlayerType = PlayerType.BLACK;
         _playerBlack = new HumanPlayer();
-        _playerWhite = new RandomPlayer();
+        _playerWhite = new RandomWinChancePlayer();
         _board.initBoard();
     }
 
@@ -64,8 +65,8 @@ public class ReversiGame extends Observable {
         PlayerType otherPlayer = (_activePlayerType == PlayerType.BLACK)? PlayerType.WHITE : PlayerType.BLACK;
         if (_board.canPlace(otherPlayer) || !_board.canPlace(_activePlayerType)) {
             _activePlayerType = otherPlayer;
-            if(!_board.isGameEnded())
-                getActivePlayer().notifyForMove();
         }
+        if(!_board.isGameEnded())
+            getActivePlayer().notifyForMove();
     }
 }
