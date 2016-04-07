@@ -7,6 +7,8 @@ import com.brechtvandevoort.reversi.model.playerimplementations.RandomWinChanceP
 import java.util.Observable;
 
 /**
+ * Implementation of the ReversiGame.
+ *
  * Created by brecht on 05/04/2016.
  */
 public class ReversiGame extends Observable {
@@ -15,6 +17,9 @@ public class ReversiGame extends Observable {
     private Player _playerBlack;
     private Player _playerWhite;
 
+    /**
+     * Constructor
+     */
     public ReversiGame() {
         _board = new ReversiBoard();
         _activePlayerType = PlayerType.BLACK;
@@ -23,6 +28,9 @@ public class ReversiGame extends Observable {
         _board.initBoard();
     }
 
+    /**
+     * Initialises the game.
+     */
     public void init() {
         _playerBlack.init(PlayerType.BLACK, this);
         _playerWhite.init(PlayerType.WHITE, this);
@@ -30,14 +38,26 @@ public class ReversiGame extends Observable {
         _playerBlack.notifyForMove();
     }
 
+    /**
+     * Returns the ReversiBoard.
+     * @return The ReversiBoard.
+     */
     public ReversiBoard getBoard() {
         return _board;
     }
 
+    /**
+     * Returns the active player.
+     * @return The PlayerType of the active player.
+     */
     public PlayerType getActivePlayerType() {
         return _activePlayerType;
     }
 
+    /**
+     * Returns the active player.
+     * @return The Player implementation of the active player.
+     */
     public Player getActivePlayer() {
         if(_activePlayerType == PlayerType.BLACK)
             return _playerBlack;
@@ -45,6 +65,12 @@ public class ReversiGame extends Observable {
             return _playerWhite;
     }
 
+    /**
+     * Places a stone on the board.
+     * @param pos The Position to place the stone on.
+     * @param player The Player placing the stone.
+     * @return True if accepted, false if not accepted.
+     */
     public boolean place(Position pos, Player player) {
         if(_activePlayerType != player.getPlayerType()) {
             return false;
